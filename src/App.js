@@ -39,7 +39,7 @@ const App = () => {
         const filteredPlaces = places.filter((place) => place.rating > rating)
 
         setFilteredPlaces(filteredPlaces);
-    }, [rating])
+    }, [rating]);
 
     // Fetch places data when coordinates or bounds change
     useEffect(() => {
@@ -63,15 +63,13 @@ const App = () => {
         }, 1000); // Wait 1 second before making API call
       
         return () => clearTimeout(delayFetch); // Cleanup previous timeout
-      }, [type, bounds]);
-      
-      
-    
-    
+    }, [type, bounds]);
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Header />
+            {/* ✅ Pass setCoordinates to Header */}
+            <Header setCoordinates={setCoordinates} />  
             <Grid container spacing={3} style={{ width: "100%" }}>
                 <Grid item xs={12} md={4}>
                     <List 

@@ -7,34 +7,32 @@ const Header = ({ setCoordinates }) => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Function to fetch location data
-    const fetchLocation = async () => {
-        if (!searchTerm.trim()) {
-            alert("Please enter a valid location!");
-            return;
-        }
+    const onPlaceChanges = async (event) => {
+        if (event.key === "Enter" && searchTerm.trim() !== "") {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchTerm)}`
+                );
 
-        try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchTerm)}`
-            );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch location data");
+                }
 
-            if (!response.ok) throw new Error("Failed to fetch location");
+                const data = await response.json();
 
-            const data = await response.json();
+                if (data.length > 0) {
+                    const { lat, lon } = data[0]; // Get first result
+                    setCoordinates({ lat: parseFloat(lat), lng: parseFloat(lon) });
 
-            if (data.length === 0) {
-                alert("Location not found. Try another search!");
-                return;
+                    console.log("Updated coordinates:", { lat: parseFloat(lat), lng: parseFloat(lon) });
+
+                } else {
+                    alert("Location not found. Try another search!");
+                }
+            } catch (error) {
+                console.error("Error fetching location:", error);
+                alert("Unable to fetch location. Please try again.");
             }
-
-            // Get first result & update coordinates
-            const { lat, lon } = data[0];
-            setCoordinates({ lat: parseFloat(lat), lng: parseFloat(lon) });
-
-        } catch (error) {
-            console.error("Error fetching location:", error);
-            alert("Unable to fetch location, please try again.");
         }
     };
 
@@ -49,7 +47,7 @@ const Header = ({ setCoordinates }) => {
                         Explore new places
                     </Typography>
                     <div className={classes.search}>
-                        <div className={classes.searchIcon} onClick={fetchLocation}>
+                        <div className={classes.searchIcon}>
                             <SearchIcon />
                         </div>
                         <InputBase
@@ -57,7 +55,7 @@ const Header = ({ setCoordinates }) => {
                             classes={{ root: classes.inputRoot, input: classes.inputInput }}
                             inputProps={{
                                 style: { paddingLeft: "2em", color: "white" },
-                                onKeyPress: (e) => e.key === "Enter" && fetchLocation(),
+                                onKeyDown: onPlaceChanges,
                             }}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
