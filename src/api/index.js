@@ -1,29 +1,31 @@
 import axios from 'axios'; 
 
-const axios = require('axios');
 
-const URL = 'https://travel-advisor.p.rapidapi.com/restaurants/list-in-boundary',
+// Store API key securely
+const API_KEY = process.env.REACT_APP_RAPIDAPI_KEY; // Use environment variables
 
-const options = {
-  params: {
-    bl_latitude: '11.847676',
-    tr_latitude: '12.838442',
-    bl_longitude: '109.095887',
-    tr_longitude: '109.149359',
-  },
-  headers: {
-    'x-rapidapi-key': '84ee0f49c6msh9371c7c4efa6dc9p161378jsnf187f3924881',
-    'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
-  }
-};
+console.log("api key: ", API_KEY);
 
-
-export const getPlacesData = async () => {
+export const getPlacesData = async (type, sw, ne) => {
     try {
-        const {data: { data }} = await axios.get(URL, options);
+        const response = await axios.get(`https://travel-advisor.p.rapidapi.com/${type}/list-in-boundary`, {
+            params: {
+                bl_latitude: sw.lat,
+                tr_latitude: ne.lat,
+                bl_longitude: sw.lng,
+                tr_longitude: ne.lng,
+            },
+            headers: {
+                'x-rapidapi-key': API_KEY, 
+                'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
+            }
+        });
 
-        return data;
+        console.log("📌 API Response:", response.data); // Debugging log
+
+        return response.data?.data || []; // Safely return data or empty array
     } catch (error) {
-        console.log(error);
+        console.error("❌ API Fetch Error:", error);
+        return []; // Return empty array on error to prevent app crash
     }
-}
+};
