@@ -93,7 +93,7 @@ const ChangeView = ({ coordinates }) => {
 // Main Map Component
 const Map = ({ setCoordinates, setBounds, coordinates, places, setChildClicked }) => {
   const classes = useStyles();
-  const isDesktop = useMediaQuery("(min-width: 600px)");
+
 
   // ✅ Debugging: Log places data
   console.log("Places Data:", places);

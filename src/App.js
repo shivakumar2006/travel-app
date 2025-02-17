@@ -39,7 +39,7 @@ const App = () => {
         const filteredPlaces = places.filter((place) => place.rating > rating)
 
         setFilteredPlaces(filteredPlaces);
-    }, [rating]);
+    }, [rating, places]);
 
     // Fetch places data when coordinates or bounds change
     useEffect(() => {
