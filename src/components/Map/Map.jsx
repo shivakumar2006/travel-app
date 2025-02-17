@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
-import { useMediaQuery } from "@mui/material";
 import Rating from "@mui/material/Rating"; 
 import L from "leaflet";
 import useStyles from "./styles";
